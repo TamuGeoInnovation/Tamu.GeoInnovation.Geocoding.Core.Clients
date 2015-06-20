@@ -9,23 +9,23 @@ using Microsoft.SqlServer.Types;
 using TAMU.GeoInnovation.PointIntersectors.Census.OutputData.CensusRecords;
 using USC.GISResearchLab.Census.Core.Configurations.ServerConfigurations;
 using USC.GISResearchLab.Common.Addresses;
-using USC.GISResearchLab.Common.Core.Geocoders.FeatureMatching;
 using USC.GISResearchLab.Common.Core.Geocoders.GeocodingQueries;
 using USC.GISResearchLab.Common.Core.Geocoders.GeocodingQueries.Options;
-using USC.GISResearchLab.Common.Core.Utils.Web.WebRequests;
-using USC.GISResearchLab.Common.Geographics.Units;
-using USC.GISResearchLab.Common.Geographics.Units.Linears;
-using USC.GISResearchLab.Common.Geometries.Points;
 using USC.GISResearchLab.Common.Utils.Encoding;
 using USC.GISResearchLab.Common.Utils.Strings;
-using USC.GISResearchLab.Core.WebServices.ResultCodes;
-using USC.GISResearchLab.Geocoding.Core.Algorithms.FeatureInterpolationMethods;
-using USC.GISResearchLab.Geocoding.Core.Algorithms.TieHandlingMethods;
 using USC.GISResearchLab.Geocoding.Core.Metadata.FeatureMatchingResults;
 using USC.GISResearchLab.Geocoding.Core.Metadata.Qualities;
 using USC.GISResearchLab.Geocoding.Core.OutputData;
 using USC.GISResearchLab.Geocoding.Core.Runners.Databases;
 using USC.GISResearchLab.Geocoding.Core.Configurations;
+using USC.GISResearchLab.Common.Geometries.Points;
+using USC.GISResearchLab.Core.WebServices.ResultCodes;
+using USC.GISResearchLab.Geocoding.Core.Algorithms.FeatureInterpolationMethods;
+using USC.GISResearchLab.Common.Geographics.Units.Linears;
+using USC.GISResearchLab.Common.Geographics.Units;
+using USC.GISResearchLab.Common.Core.Geocoders.FeatureMatching;
+using USC.GISResearchLab.Geocoding.Core.Algorithms.TieHandlingMethods;
+using USC.GISResearchLab.Common.Core.Utils.Web.WebRequests;
 
 namespace USC.GISResearchLab.Geocoding.Core.Clients
 {
