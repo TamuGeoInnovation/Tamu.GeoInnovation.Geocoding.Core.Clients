@@ -127,7 +127,7 @@ namespace USC.GISResearchLab.Geocoding.Core.Clients
                 {
                     List<IGeocode> geocodes = new List<IGeocode>();
 
-                    int version = Convert.ToInt32(baseOptions.Version * 100.0);
+                    int version = Convert.ToInt32(Convert.ToDouble(baseOptions.Version.ToString()) * 100.0);
 
                     switch (version)
                     {
@@ -202,7 +202,7 @@ namespace USC.GISResearchLab.Geocoding.Core.Clients
                 foreach (string line in lines)
                 {
 
-                    Geocode geocode = new Geocode(baseOptions.Version);
+                    Geocode geocode = new Geocode(Convert.ToDouble(baseOptions.Version.ToString()));
 
                     string[] parts = line.Split(',');
                     if (parts.Length == 150)
@@ -526,7 +526,7 @@ namespace USC.GISResearchLab.Geocoding.Core.Clients
 
         public static Geocode FromCsv_V3_01(StreetAddress streetAddress, string webserviceResultString, BaseOptions baseOptions)
         {
-            Geocode geocode = new Geocode(baseOptions.Version);
+            Geocode geocode = new Geocode(Convert.ToDouble(baseOptions.Version.ToString()));
 
             string[] parts = webserviceResultString.Split(',');
             if (parts.Length == 128)
@@ -764,7 +764,7 @@ namespace USC.GISResearchLab.Geocoding.Core.Clients
 
         public static Geocode FromCsv_V2_96(StreetAddress streetAddress, string webserviceResultString, BaseOptions baseOptions)
         {
-            Geocode geocode = new Geocode(baseOptions.Version);
+            Geocode geocode = new Geocode(Convert.ToDouble(baseOptions.Version.ToString()));
 
              string[] parts = webserviceResultString.Split(',');
              if (parts.Length == 122)
@@ -980,7 +980,7 @@ namespace USC.GISResearchLab.Geocoding.Core.Clients
 
         public static Geocode FromCsv_V2_95(StreetAddress streetAddress, string webserviceResultString, BaseOptions baseOptions)
         {
-            Geocode geocode = new Geocode(baseOptions.Version);
+            Geocode geocode = new Geocode(Convert.ToDouble(baseOptions.Version.ToString()));
 
             string[] parts = webserviceResultString.Split(',');
             if (parts.Length == 115)
