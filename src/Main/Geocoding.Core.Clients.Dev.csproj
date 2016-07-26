@@ -313,6 +313,10 @@
       <Name>Geocoding.Core.Dev</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\PointIntersectors.Census\src\Main\PointIntersectors.Census.Dev.csproj">
+      <Project>{5328FADB-9D7C-410A-877E-F03E08367D9C}</Project>
+      <Name>PointIntersectors.Census.Dev</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!--  

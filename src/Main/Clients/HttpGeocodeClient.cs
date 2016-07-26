@@ -6,8 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Xml;
 using Microsoft.SqlServer.Types;
-using TAMU.GeoInnovation.PointIntersectors.Census.OutputData.CensusRecords;
-using USC.GISResearchLab.Census.Core.Configurations.ServerConfigurations;
+
 using USC.GISResearchLab.Common.Addresses;
 using USC.GISResearchLab.Common.Core.Geocoders.GeocodingQueries;
 using USC.GISResearchLab.Common.Core.Geocoders.GeocodingQueries.Options;
@@ -26,6 +25,8 @@ using USC.GISResearchLab.Common.Geographics.Units;
 using USC.GISResearchLab.Common.Core.Geocoders.FeatureMatching;
 using USC.GISResearchLab.Geocoding.Core.Algorithms.TieHandlingMethods;
 using USC.GISResearchLab.Common.Core.Utils.Web.WebRequests;
+using USC.GISResearchLab.Census.Core.Configurations.ServerConfigurations;
+using TAMU.GeoInnovation.PointIntersectors.Census.OutputData.CensusRecords;
 
 namespace USC.GISResearchLab.Geocoding.Core.Clients
 {
