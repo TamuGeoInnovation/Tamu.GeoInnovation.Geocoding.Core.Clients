@@ -28,13 +28,13 @@
           <serializedValue>StrongWildcard</serializedValue>
         </property>
         <property path="/maxBufferSize" isComplexType="false" isExplicitlyDefined="true" clrType="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>65536</serializedValue>
+          <serializedValue>75536</serializedValue>
         </property>
         <property path="/maxBufferPoolSize" isComplexType="false" isExplicitlyDefined="true" clrType="System.Int64, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>524288</serializedValue>
         </property>
         <property path="/maxReceivedMessageSize" isComplexType="false" isExplicitlyDefined="true" clrType="System.Int64, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>65536</serializedValue>
+          <serializedValue>85536</serializedValue>
         </property>
         <property path="/messageEncoding" isComplexType="false" isExplicitlyDefined="true" clrType="System.ServiceModel.WSMessageEncoding, System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>Text</serializedValue>
@@ -167,7 +167,7 @@
           <serializedValue>524288</serializedValue>
         </property>
         <property path="/httpTransport/maxReceivedMessageSize" isComplexType="false" isExplicitlyDefined="true" clrType="System.Int64, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>65536</serializedValue>
+          <serializedValue>85536</serializedValue>
         </property>
         <property path="/httpTransport/allowCookies" isComplexType="false" isExplicitlyDefined="true" clrType="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>False</serializedValue>
@@ -185,7 +185,7 @@
           <serializedValue>True</serializedValue>
         </property>
         <property path="/httpTransport/maxBufferSize" isComplexType="false" isExplicitlyDefined="true" clrType="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>65536</serializedValue>
+          <serializedValue>85536</serializedValue>
         </property>
         <property path="/httpTransport/proxyAddress" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
