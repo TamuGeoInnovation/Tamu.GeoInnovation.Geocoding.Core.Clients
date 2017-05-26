@@ -290,6 +290,10 @@
       <Name>Geocoding.Core.OutputData.GeocodeResultSet.Dev</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Geocoding.Core.OutputData\src\Main\Geocoding.Core.OutputData.Dev.csproj">
+      <Project>{ac115040-d3ee-4ab7-a3e5-5842724acc15}</Project>
+      <Name>Geocoding.Core.OutputData.Dev</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Geocoding.Core.Queries\src\Main\Geocoding.Core.Queries.Dev.csproj">
       <Project>{A1CEFF20-E839-47DE-88C4-06A8AD225221}</Project>
       <Name>Geocoding.Core.Queries.Dev</Name>
