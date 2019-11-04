@@ -1,32 +1,31 @@
-﻿using System;
+﻿using Microsoft.SqlServer.Types;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Threading;
 using System.Xml;
-using Microsoft.SqlServer.Types;
-
+using TAMU.GeoInnovation.PointIntersectors.Census.OutputData.CensusRecords;
+using USC.GISResearchLab.Census.Core.Configurations.ServerConfigurations;
 using USC.GISResearchLab.Common.Addresses;
+using USC.GISResearchLab.Common.Core.Geocoders.FeatureMatching;
 using USC.GISResearchLab.Common.Core.Geocoders.GeocodingQueries;
 using USC.GISResearchLab.Common.Core.Geocoders.GeocodingQueries.Options;
+using USC.GISResearchLab.Common.Core.Utils.Web.WebRequests;
+using USC.GISResearchLab.Common.Geographics.Units;
+using USC.GISResearchLab.Common.Geographics.Units.Linears;
+using USC.GISResearchLab.Common.Geometries.Points;
 using USC.GISResearchLab.Common.Utils.Encoding;
 using USC.GISResearchLab.Common.Utils.Strings;
+using USC.GISResearchLab.Core.WebServices.ResultCodes;
+using USC.GISResearchLab.Geocoding.Core.Algorithms.FeatureInterpolationMethods;
+using USC.GISResearchLab.Geocoding.Core.Algorithms.TieHandlingMethods;
+using USC.GISResearchLab.Geocoding.Core.Configurations;
 using USC.GISResearchLab.Geocoding.Core.Metadata.FeatureMatchingResults;
 using USC.GISResearchLab.Geocoding.Core.Metadata.Qualities;
 using USC.GISResearchLab.Geocoding.Core.OutputData;
 using USC.GISResearchLab.Geocoding.Core.Runners.Databases;
-using USC.GISResearchLab.Geocoding.Core.Configurations;
-using USC.GISResearchLab.Common.Geometries.Points;
-using USC.GISResearchLab.Core.WebServices.ResultCodes;
-using USC.GISResearchLab.Geocoding.Core.Algorithms.FeatureInterpolationMethods;
-using USC.GISResearchLab.Common.Geographics.Units.Linears;
-using USC.GISResearchLab.Common.Geographics.Units;
-using USC.GISResearchLab.Common.Core.Geocoders.FeatureMatching;
-using USC.GISResearchLab.Geocoding.Core.Algorithms.TieHandlingMethods;
-using USC.GISResearchLab.Common.Core.Utils.Web.WebRequests;
-using USC.GISResearchLab.Census.Core.Configurations.ServerConfigurations;
-using TAMU.GeoInnovation.PointIntersectors.Census.OutputData.CensusRecords;
 
 namespace USC.GISResearchLab.Geocoding.Core.Clients
 {
@@ -152,7 +151,7 @@ namespace USC.GISResearchLab.Geocoding.Core.Clients
                     }
 
                     DateTime timeEnd = DateTime.Now;
-                    
+
 
                     foreach (Geocode geocode in geocodes)
                     {
@@ -195,7 +194,7 @@ namespace USC.GISResearchLab.Geocoding.Core.Clients
         {
             List<IGeocode> ret = new List<IGeocode>();
 
-            string[] lines = webserviceResultString.Split(new string[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+            string[] lines = webserviceResultString.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
             if (lines.Length > 0)
             {
@@ -548,7 +547,7 @@ namespace USC.GISResearchLab.Geocoding.Core.Clients
 
                     geocode.Geometry = new Point(Convert.ToDouble(parts[4]), Convert.ToDouble(parts[3]));
 
-                    geocode.NAACCRGISCoordinateQualityCode= parts[5];
+                    geocode.NAACCRGISCoordinateQualityCode = parts[5];
                     geocode.NAACCRGISCoordinateQualityName = parts[6];
                     geocode.NAACCRGISCoordinateQualityType = NAACCRGISCoordinateQuality.GetNAACCRGISCoordinateQualityTypeFromCode(geocode.NAACCRGISCoordinateQualityCode);
 
@@ -586,7 +585,7 @@ namespace USC.GISResearchLab.Geocoding.Core.Clients
                         geocode.CensusYear = (CensusYear)Enum.Parse(typeof(CensusYear), parts[23]);
                     }
 
-                    geocode.NAACCRCensusTractCertaintyCode= parts[24];
+                    geocode.NAACCRCensusTractCertaintyCode = parts[24];
                     geocode.NAACCRCensusTractCertaintyName = parts[25];
                     geocode.NAACCRCensusTractCertaintyType = NAACCRCensusTractCertainty.GetNAACCRNAACCRCensusTractCertaintyTypeFromCode(geocode.NAACCRCensusTractCertaintyCode);
 
@@ -767,216 +766,216 @@ namespace USC.GISResearchLab.Geocoding.Core.Clients
         {
             Geocode geocode = new Geocode(Convert.ToDouble(baseOptions.Version.ToString()));
 
-             string[] parts = webserviceResultString.Split(',');
-             if (parts.Length == 122)
-             {
-                 if (parts != null)
-                 {
-                     int index = 0;
-                     geocode.InputAddress = streetAddress;
+            string[] parts = webserviceResultString.Split(',');
+            if (parts.Length == 122)
+            {
+                if (parts != null)
+                {
+                    int index = 0;
+                    geocode.InputAddress = streetAddress;
 
-                     geocode.TransactionId = parts[0];
-                     geocode.Version = Convert.ToDouble(parts[1]);
-                     geocode.SetQueryStatusCode(Convert.ToInt32(parts[2]));
+                    geocode.TransactionId = parts[0];
+                    geocode.Version = Convert.ToDouble(parts[1]);
+                    geocode.SetQueryStatusCode(Convert.ToInt32(parts[2]));
 
-                     if (geocode.QueryStatusCodes == QueryStatusCodes.Success)
-                     {
-                         geocode.Valid = true;
-                     }
+                    if (geocode.QueryStatusCodes == QueryStatusCodes.Success)
+                    {
+                        geocode.Valid = true;
+                    }
 
-                     geocode.Geometry = new Point(Convert.ToDouble(parts[4]), Convert.ToDouble(parts[3]));
-                     geocode.MatchScore = Convert.ToDouble(parts[5]);
-                     //geocode.GeocodeQualityType = (GeocodeQualityType) Convert.ToInt32(parts[6]);
-                     geocode.SetMatchType(parts[6]);
-                     geocode.FM_GeographyType = (FeatureMatchingGeographyType)Enum.Parse(typeof(FeatureMatchingGeographyType), parts[7]);
-                     geocode.InterpolationType = (InterpolationType)Enum.Parse(typeof(InterpolationType), parts[8]);
-                     geocode.InterpolationSubType = (InterpolationSubType)Enum.Parse(typeof(InterpolationSubType), parts[9]);
-                     geocode.SetMatchedLocationType(parts[10]);
-                     geocode.FM_ResultType = (FeatureMatchingResultType)Enum.Parse(typeof(FeatureMatchingResultType), parts[11]);
+                    geocode.Geometry = new Point(Convert.ToDouble(parts[4]), Convert.ToDouble(parts[3]));
+                    geocode.MatchScore = Convert.ToDouble(parts[5]);
+                    //geocode.GeocodeQualityType = (GeocodeQualityType) Convert.ToInt32(parts[6]);
+                    geocode.SetMatchType(parts[6]);
+                    geocode.FM_GeographyType = (FeatureMatchingGeographyType)Enum.Parse(typeof(FeatureMatchingGeographyType), parts[7]);
+                    geocode.InterpolationType = (InterpolationType)Enum.Parse(typeof(InterpolationType), parts[8]);
+                    geocode.InterpolationSubType = (InterpolationSubType)Enum.Parse(typeof(InterpolationSubType), parts[9]);
+                    geocode.SetMatchedLocationType(parts[10]);
+                    geocode.FM_ResultType = (FeatureMatchingResultType)Enum.Parse(typeof(FeatureMatchingResultType), parts[11]);
 
-                     if (!String.IsNullOrEmpty (parts[12]))
-                     {
-                         if (StringUtils.IsDouble(parts[12]))
-                         {
-                             geocode.FM_ResultCount = Convert.ToInt32(parts[12]);
-                         }
-                     }
+                    if (!String.IsNullOrEmpty(parts[12]))
+                    {
+                        if (StringUtils.IsDouble(parts[12]))
+                        {
+                            geocode.FM_ResultCount = Convert.ToInt32(parts[12]);
+                        }
+                    }
 
-                     geocode.FM_Notes = parts[13];
-                     geocode.FM_TieNotes= parts[14];
-                     geocode.FM_TieStrategy= (TieHandlingStrategyType)Enum.Parse(typeof(TieHandlingStrategyType), parts[15]);
-                     geocode.FM_SelectionMethod = (FeatureMatchingSelectionMethod)Enum.Parse(typeof(FeatureMatchingSelectionMethod), parts[16]);
-                     geocode.FM_SelectionNotes = parts[17];
+                    geocode.FM_Notes = parts[13];
+                    geocode.FM_TieNotes = parts[14];
+                    geocode.FM_TieStrategy = (TieHandlingStrategyType)Enum.Parse(typeof(TieHandlingStrategyType), parts[15]);
+                    geocode.FM_SelectionMethod = (FeatureMatchingSelectionMethod)Enum.Parse(typeof(FeatureMatchingSelectionMethod), parts[16]);
+                    geocode.FM_SelectionNotes = parts[17];
 
-                     geocode.TimeTaken = TimeSpan.FromSeconds(Convert.ToDouble(parts[18]));
+                    geocode.TimeTaken = TimeSpan.FromSeconds(Convert.ToDouble(parts[18]));
 
-                     if (!String.IsNullOrEmpty(parts[13]))
-                     {
-                         geocode.CensusYear = (CensusYear)Enum.Parse(typeof(CensusYear), parts[19]);
-                     }
-                     geocode.CensusBlock = parts[20];
-                     geocode.CensusBlockGroup = parts[21];
-                     geocode.CensusTract = parts[22];
-                     geocode.CensusCountyFips = parts[23];
-                     geocode.CensusCbsaFips = parts[24];
-                     geocode.CensusCbsaMicro = parts[25];
-                     geocode.CensusMcdFips = parts[26];
-                     geocode.CensusMetDivFips = parts[27];
-                     geocode.CensusMsaFips = parts[28];
-                     geocode.CensusPlaceFips = parts[29];
-                     geocode.CensusStateFips = parts[30];
+                    if (!String.IsNullOrEmpty(parts[13]))
+                    {
+                        geocode.CensusYear = (CensusYear)Enum.Parse(typeof(CensusYear), parts[19]);
+                    }
+                    geocode.CensusBlock = parts[20];
+                    geocode.CensusBlockGroup = parts[21];
+                    geocode.CensusTract = parts[22];
+                    geocode.CensusCountyFips = parts[23];
+                    geocode.CensusCbsaFips = parts[24];
+                    geocode.CensusCbsaMicro = parts[25];
+                    geocode.CensusMcdFips = parts[26];
+                    geocode.CensusMetDivFips = parts[27];
+                    geocode.CensusMsaFips = parts[28];
+                    geocode.CensusPlaceFips = parts[29];
+                    geocode.CensusStateFips = parts[30];
 
-                     geocode.MatchedAddress = new RelaxableStreetAddress();
-                     geocode.MatchedAddress.Number = parts[31];
-                     geocode.MatchedAddress.NumberFractional = parts[32];
-                     geocode.MatchedAddress.PreDirectional = parts[33];
-                     geocode.MatchedAddress.PreQualifier = parts[34];
-                     geocode.MatchedAddress.PreType = parts[35];
-                     geocode.MatchedAddress.PreArticle = parts[36];
-                     geocode.MatchedAddress.StreetName = parts[37];
-                     geocode.MatchedAddress.PostArticle = parts[38];
-                     geocode.MatchedAddress.PostQualifier = parts[39];
-                     geocode.MatchedAddress.Suffix = parts[40];
-                     geocode.MatchedAddress.PostDirectional = parts[41];
-                     geocode.MatchedAddress.SuiteType = parts[42];
-                     geocode.MatchedAddress.SuiteNumber = parts[43];
-                     geocode.MatchedAddress.PostOfficeBoxType = parts[44];
-                     geocode.MatchedAddress.PostOfficeBoxNumber = parts[45];
-                     geocode.MatchedAddress.City = parts[46];
-                     geocode.MatchedAddress.ConsolidatedCity = parts[47];
-                     geocode.MatchedAddress.MinorCivilDivision = parts[48];
-                     geocode.MatchedAddress.CountySubregion = parts[49];
-                     geocode.MatchedAddress.County = parts[50];
-                     geocode.MatchedAddress.State = parts[51];
-                     geocode.MatchedAddress.ZIP = parts[52];
-                     geocode.MatchedAddress.ZIPPlus1 = parts[53];
-                     geocode.MatchedAddress.ZIPPlus2 = parts[54];
-                     geocode.MatchedAddress.ZIPPlus3 = parts[55];
-                     geocode.MatchedAddress.ZIPPlus4 = parts[56];
-                     geocode.MatchedAddress.ZIPPlus5 = parts[57];
+                    geocode.MatchedAddress = new RelaxableStreetAddress();
+                    geocode.MatchedAddress.Number = parts[31];
+                    geocode.MatchedAddress.NumberFractional = parts[32];
+                    geocode.MatchedAddress.PreDirectional = parts[33];
+                    geocode.MatchedAddress.PreQualifier = parts[34];
+                    geocode.MatchedAddress.PreType = parts[35];
+                    geocode.MatchedAddress.PreArticle = parts[36];
+                    geocode.MatchedAddress.StreetName = parts[37];
+                    geocode.MatchedAddress.PostArticle = parts[38];
+                    geocode.MatchedAddress.PostQualifier = parts[39];
+                    geocode.MatchedAddress.Suffix = parts[40];
+                    geocode.MatchedAddress.PostDirectional = parts[41];
+                    geocode.MatchedAddress.SuiteType = parts[42];
+                    geocode.MatchedAddress.SuiteNumber = parts[43];
+                    geocode.MatchedAddress.PostOfficeBoxType = parts[44];
+                    geocode.MatchedAddress.PostOfficeBoxNumber = parts[45];
+                    geocode.MatchedAddress.City = parts[46];
+                    geocode.MatchedAddress.ConsolidatedCity = parts[47];
+                    geocode.MatchedAddress.MinorCivilDivision = parts[48];
+                    geocode.MatchedAddress.CountySubregion = parts[49];
+                    geocode.MatchedAddress.County = parts[50];
+                    geocode.MatchedAddress.State = parts[51];
+                    geocode.MatchedAddress.ZIP = parts[52];
+                    geocode.MatchedAddress.ZIPPlus1 = parts[53];
+                    geocode.MatchedAddress.ZIPPlus2 = parts[54];
+                    geocode.MatchedAddress.ZIPPlus3 = parts[55];
+                    geocode.MatchedAddress.ZIPPlus4 = parts[56];
+                    geocode.MatchedAddress.ZIPPlus5 = parts[57];
 
-                     geocode.ParsedAddress = new StreetAddress();
-                     geocode.ParsedAddress.Number = parts[58];
-                     geocode.ParsedAddress.NumberFractional = parts[59];
-                     geocode.ParsedAddress.PreDirectional = parts[60];
-                     geocode.ParsedAddress.PreQualifier = parts[61];
-                     geocode.ParsedAddress.PreType = parts[62];
-                     geocode.ParsedAddress.PreArticle = parts[63];
-                     geocode.ParsedAddress.StreetName = parts[64];
-                     geocode.ParsedAddress.PostArticle = parts[65];
-                     geocode.ParsedAddress.PostQualifier = parts[66];
-                     geocode.ParsedAddress.Suffix = parts[67];
-                     geocode.ParsedAddress.PostDirectional = parts[68];
-                     geocode.ParsedAddress.SuiteType = parts[69];
-                     geocode.ParsedAddress.SuiteNumber = parts[70];
-                     geocode.ParsedAddress.PostOfficeBoxType = parts[71];
-                     geocode.ParsedAddress.PostOfficeBoxNumber = parts[72];
-                     geocode.ParsedAddress.City = parts[73];
-                     geocode.ParsedAddress.ConsolidatedCity = parts[74];
-                     geocode.ParsedAddress.MinorCivilDivision = parts[75];
-                     geocode.ParsedAddress.CountySubregion = parts[76];
-                     geocode.ParsedAddress.County = parts[77];
-                     geocode.ParsedAddress.State = parts[78];
-                     geocode.ParsedAddress.ZIP = parts[79];
-                     geocode.ParsedAddress.ZIPPlus1 = parts[80];
-                     geocode.ParsedAddress.ZIPPlus2 = parts[81];
-                     geocode.ParsedAddress.ZIPPlus3 = parts[82];
-                     geocode.ParsedAddress.ZIPPlus4 = parts[83];
-                     geocode.ParsedAddress.ZIPPlus5 = parts[84];
+                    geocode.ParsedAddress = new StreetAddress();
+                    geocode.ParsedAddress.Number = parts[58];
+                    geocode.ParsedAddress.NumberFractional = parts[59];
+                    geocode.ParsedAddress.PreDirectional = parts[60];
+                    geocode.ParsedAddress.PreQualifier = parts[61];
+                    geocode.ParsedAddress.PreType = parts[62];
+                    geocode.ParsedAddress.PreArticle = parts[63];
+                    geocode.ParsedAddress.StreetName = parts[64];
+                    geocode.ParsedAddress.PostArticle = parts[65];
+                    geocode.ParsedAddress.PostQualifier = parts[66];
+                    geocode.ParsedAddress.Suffix = parts[67];
+                    geocode.ParsedAddress.PostDirectional = parts[68];
+                    geocode.ParsedAddress.SuiteType = parts[69];
+                    geocode.ParsedAddress.SuiteNumber = parts[70];
+                    geocode.ParsedAddress.PostOfficeBoxType = parts[71];
+                    geocode.ParsedAddress.PostOfficeBoxNumber = parts[72];
+                    geocode.ParsedAddress.City = parts[73];
+                    geocode.ParsedAddress.ConsolidatedCity = parts[74];
+                    geocode.ParsedAddress.MinorCivilDivision = parts[75];
+                    geocode.ParsedAddress.CountySubregion = parts[76];
+                    geocode.ParsedAddress.County = parts[77];
+                    geocode.ParsedAddress.State = parts[78];
+                    geocode.ParsedAddress.ZIP = parts[79];
+                    geocode.ParsedAddress.ZIPPlus1 = parts[80];
+                    geocode.ParsedAddress.ZIPPlus2 = parts[81];
+                    geocode.ParsedAddress.ZIPPlus3 = parts[82];
+                    geocode.ParsedAddress.ZIPPlus4 = parts[83];
+                    geocode.ParsedAddress.ZIPPlus5 = parts[84];
 
-                     geocode.MatchedFeatureAddress = new StreetAddress();
-                     geocode.MatchedFeatureAddress.Number = parts[85];
-                     geocode.MatchedFeatureAddress.NumberFractional = parts[86];
-                     geocode.MatchedFeatureAddress.PreDirectional = parts[87];
-                     geocode.MatchedFeatureAddress.PreQualifier = parts[88];
-                     geocode.MatchedFeatureAddress.PreType = parts[89];
-                     geocode.MatchedFeatureAddress.PreArticle = parts[90];
-                     geocode.MatchedFeatureAddress.StreetName = parts[91];
-                     geocode.MatchedFeatureAddress.PostArticle = parts[92];
-                     geocode.MatchedFeatureAddress.PostQualifier = parts[93];
-                     geocode.MatchedFeatureAddress.Suffix = parts[94];
-                     geocode.MatchedFeatureAddress.PostDirectional = parts[95];
-                     geocode.MatchedFeatureAddress.SuiteType = parts[96];
-                     geocode.MatchedFeatureAddress.SuiteNumber = parts[97];
-                     geocode.MatchedFeatureAddress.PostOfficeBoxType = parts[98];
-                     geocode.MatchedFeatureAddress.PostOfficeBoxNumber = parts[99];
-                     geocode.MatchedFeatureAddress.City = parts[100];
-                     geocode.MatchedFeatureAddress.ConsolidatedCity = parts[101];
-                     geocode.MatchedFeatureAddress.MinorCivilDivision = parts[102];
-                     geocode.MatchedFeatureAddress.CountySubregion = parts[103];
-                     geocode.MatchedFeatureAddress.County = parts[104];
-                     geocode.MatchedFeatureAddress.State = parts[105];
-                     geocode.MatchedFeatureAddress.ZIP = parts[106];
-                     geocode.MatchedFeatureAddress.ZIPPlus1 = parts[107];
-                     geocode.MatchedFeatureAddress.ZIPPlus2 = parts[108];
-                     geocode.MatchedFeatureAddress.ZIPPlus3 = parts[109];
-                     geocode.MatchedFeatureAddress.ZIPPlus4 = parts[110];
-                     geocode.MatchedFeatureAddress.ZIPPlus5 = parts[111];
+                    geocode.MatchedFeatureAddress = new StreetAddress();
+                    geocode.MatchedFeatureAddress.Number = parts[85];
+                    geocode.MatchedFeatureAddress.NumberFractional = parts[86];
+                    geocode.MatchedFeatureAddress.PreDirectional = parts[87];
+                    geocode.MatchedFeatureAddress.PreQualifier = parts[88];
+                    geocode.MatchedFeatureAddress.PreType = parts[89];
+                    geocode.MatchedFeatureAddress.PreArticle = parts[90];
+                    geocode.MatchedFeatureAddress.StreetName = parts[91];
+                    geocode.MatchedFeatureAddress.PostArticle = parts[92];
+                    geocode.MatchedFeatureAddress.PostQualifier = parts[93];
+                    geocode.MatchedFeatureAddress.Suffix = parts[94];
+                    geocode.MatchedFeatureAddress.PostDirectional = parts[95];
+                    geocode.MatchedFeatureAddress.SuiteType = parts[96];
+                    geocode.MatchedFeatureAddress.SuiteNumber = parts[97];
+                    geocode.MatchedFeatureAddress.PostOfficeBoxType = parts[98];
+                    geocode.MatchedFeatureAddress.PostOfficeBoxNumber = parts[99];
+                    geocode.MatchedFeatureAddress.City = parts[100];
+                    geocode.MatchedFeatureAddress.ConsolidatedCity = parts[101];
+                    geocode.MatchedFeatureAddress.MinorCivilDivision = parts[102];
+                    geocode.MatchedFeatureAddress.CountySubregion = parts[103];
+                    geocode.MatchedFeatureAddress.County = parts[104];
+                    geocode.MatchedFeatureAddress.State = parts[105];
+                    geocode.MatchedFeatureAddress.ZIP = parts[106];
+                    geocode.MatchedFeatureAddress.ZIPPlus1 = parts[107];
+                    geocode.MatchedFeatureAddress.ZIPPlus2 = parts[108];
+                    geocode.MatchedFeatureAddress.ZIPPlus3 = parts[109];
+                    geocode.MatchedFeatureAddress.ZIPPlus4 = parts[110];
+                    geocode.MatchedFeatureAddress.ZIPPlus5 = parts[111];
 
-                     if (!String.IsNullOrEmpty(parts[112]))
-                     {
-                         geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.Area = Convert.ToDouble(parts[112]);
+                    if (!String.IsNullOrEmpty(parts[112]))
+                    {
+                        geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.Area = Convert.ToDouble(parts[112]);
 
-                         if (StringUtils.IsDouble(parts[112]))
-                         {
-                             geocode.GeocodedError.ErrorBounds = Convert.ToDouble(parts[112]);
-                         }
-                     }
+                        if (StringUtils.IsDouble(parts[112]))
+                        {
+                            geocode.GeocodedError.ErrorBounds = Convert.ToDouble(parts[112]);
+                        }
+                    }
 
-                     if (!String.IsNullOrEmpty(parts[113]))
-                     {
-                         Unit unit = UnitManager.FromString(parts[113]);
-                         if (unit.UnitType == UnitTypes.Linear)
-                         {
-                             geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.AreaUnits = ((LinearUnit)unit).LinearUnitTypes;
-                             geocode.GeocodedError.ErrorBoundsUnit = ((LinearUnit)unit).LinearUnitTypes;
-                         }
-                     }
+                    if (!String.IsNullOrEmpty(parts[113]))
+                    {
+                        Unit unit = UnitManager.FromString(parts[113]);
+                        if (unit.UnitType == UnitTypes.Linear)
+                        {
+                            geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.AreaUnits = ((LinearUnit)unit).LinearUnitTypes;
+                            geocode.GeocodedError.ErrorBoundsUnit = ((LinearUnit)unit).LinearUnitTypes;
+                        }
+                    }
 
 
-                     string srid = parts[114];
-                     if (!String.IsNullOrEmpty(srid))
-                     {
-                         geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SRID = Convert.ToInt32(srid);
-                     }
+                    string srid = parts[114];
+                    if (!String.IsNullOrEmpty(srid))
+                    {
+                        geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SRID = Convert.ToInt32(srid);
+                    }
 
-                     string featureGml = parts[115];
+                    string featureGml = parts[115];
 
-                     if (!String.IsNullOrEmpty(featureGml))
-                     {
-                         try
-                         {
-                             StringReader stringReader = new StringReader(featureGml);
-                             XmlReader xmlReader = XmlReader.Create(stringReader);
-                             SqlXml sqlXml = new SqlXml(xmlReader);
-                             geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SqlGeometry = SqlGeometry.GeomFromGml(sqlXml, geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SRID);
+                    if (!String.IsNullOrEmpty(featureGml))
+                    {
+                        try
+                        {
+                            StringReader stringReader = new StringReader(featureGml);
+                            XmlReader xmlReader = XmlReader.Create(stringReader);
+                            SqlXml sqlXml = new SqlXml(xmlReader);
+                            geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SqlGeometry = SqlGeometry.GeomFromGml(sqlXml, geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SRID);
 
-                             if (geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SqlGeometry != null && !geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SqlGeometry.IsNull)
-                             {
-                                 geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SqlGeography = SQLSpatialTools.SQLSpatialToolsFunctions.MakeValidGeographyFromGeometry(geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SqlGeometry);
-                             }
-                         }
-                         catch (Exception ex)
-                         {
-                             geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.Error = ex.Message;
-                         }
-                     }
+                            if (geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SqlGeometry != null && !geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SqlGeometry.IsNull)
+                            {
+                                geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SqlGeography = SQLSpatialTools.SQLSpatialToolsFunctions.MakeValidGeographyFromGeometry(geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.SqlGeometry);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            geocode.MatchedFeature.MatchedReferenceFeature.StreetAddressableGeographicFeature.Geometry.Error = ex.Message;
+                        }
+                    }
 
-                     geocode.SourceType = parts[116];
-                     geocode.SourceVintage = parts[117];
+                    geocode.SourceType = parts[116];
+                    geocode.SourceVintage = parts[117];
 
-                     geocode.MatchedFeature.PrimaryIdField = parts[118];
-                     geocode.MatchedFeature.PrimaryIdValue = parts[119];
-                     geocode.MatchedFeature.SecondaryIdField = parts[120];
-                     geocode.MatchedFeature.SecondaryIdValue = parts[121];
-                 }
-             }
-             else
-             {
-                 throw new Exception("Invalid return value from web service: " + webserviceResultString);
-             }
+                    geocode.MatchedFeature.PrimaryIdField = parts[118];
+                    geocode.MatchedFeature.PrimaryIdValue = parts[119];
+                    geocode.MatchedFeature.SecondaryIdField = parts[120];
+                    geocode.MatchedFeature.SecondaryIdValue = parts[121];
+                }
+            }
+            else
+            {
+                throw new Exception("Invalid return value from web service: " + webserviceResultString);
+            }
 
-             return geocode;
+            return geocode;
         }
 
         public static Geocode FromCsv_V2_95(StreetAddress streetAddress, string webserviceResultString, BaseOptions baseOptions)
